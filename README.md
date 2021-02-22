@@ -30,3 +30,8 @@
 - [x] [Workqueue Example](https://github.com/kubernetes/client-go/tree/master/examples/workqueue)
 - [x] [Extend the Kubernetes API with CustomResourceDefinitions](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/)
 - [x] Design of my CRD (schema, yaml)
+- [x] [Helm vs Kubernetes Operators](https://www.youtube.com/watch?v=bq8Cm-zbdqU)
+- [x] [Extending Kubernetes 101](https://www.youtube.com/watch?v=yn04ERW0SbI)
+- [x] [Writing Kubernetes Controllers for CRDs](https://www.youtube.com/watch?v=7wdUa4Ulwxg)
+- [x] [To Crd, or Not to Crd, That is the Question](https://www.youtube.com/watch?v=xGafiZEX0YA)
+
