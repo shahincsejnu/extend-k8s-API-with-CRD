@@ -1,5 +1,9 @@
 # extend-k8s-API-with-CRD
 
+# Overall Process of extending k8s API with CRD
+
+    CRD --> CR  --> Custom Controller
+
 # CustomResourceDefinition
 
 ## CRD Structure (for `apiextensions.k8s.io/v1`)
@@ -31,6 +35,9 @@ spec:
             spec:
               
 ```
+
+## Explanations of CRD structure fields
+
 * `apiVersion`: The apiVersion key specifies which version of the Kubernetes API you’re using to create this object. To create a new CRD, we use “apiextensions.k8s.io/v1beta1” as the value.
 * `kind`: The kind key specifies what kind of object you want to create. As we are about to create a CRD, we put “CustomResourceDefinition” as the value.
 * `metadata`: The metadata key is used to define the data that can uniquely identify the object. In the example, in this tutorial, you define a name to identify the object, which is the combination of `names.plural` and `spec.group`.
@@ -44,7 +51,17 @@ spec:
         * `storage`: The storage key specifies whether this version is saved in the cluster, since the cluster can save only one version.
         * `schema`: 
 
-## Intuitions
+## Custom Resource Structure
+
+```yaml
+apiVersion:
+kind:
+metadata:
+spec:
+```
+
+
+# Intuitions
 
 - ```go
   type CronJob struct {
@@ -60,6 +77,8 @@ spec:
   in `Go` during copying(b:= a) these things (*int(pointer), slice, map, interface) are shallow copied (means b refers `a`'s those things pointers)
 
 - Each object of kubernetes has a method named `DeepCopy()`, which fully copied the things, like in `b := a` b and a's internal references are not same both will be differnet if we use DeepCopy()
+- CRD can be registered with k8s cluster by `kubectl apply -f <crd_yaml>`
+- To check the CRD you just created, run `kubectl describe crd <crd_name>`
 
 
 # Resources (sequentially)
@@ -76,4 +95,5 @@ spec:
 - [x] [Extending Kubernetes 101](https://www.youtube.com/watch?v=yn04ERW0SbI)
 - [x] [Writing Kubernetes Controllers for CRDs](https://www.youtube.com/watch?v=7wdUa4Ulwxg)
 - [x] [To Crd, or Not to Crd, That is the Question](https://www.youtube.com/watch?v=xGafiZEX0YA)
+- [x] https://developer.ibm.com/technologies/containers/tutorials/kubernetes-custom-resource-definitions/
 
