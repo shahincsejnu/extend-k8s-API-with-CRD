@@ -9,6 +9,11 @@ spec:
   selector:
     matchLabels:
       app: apiserver
+  serviceType: ClusterIP
+  servicePorts:
+      port: 8080
+      targetPort: 8080
+      #nodePort: 31005
   template:
     metadata:
       labels:

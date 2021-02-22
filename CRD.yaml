@@ -25,6 +25,17 @@ spec:
                       properties:
                         app:
                           type: string
+                serviceType:
+                  type: string
+                servicePorts:
+                  type: object
+                  properties:
+                    port:
+                      type: integer
+                    targetPort:
+                      type: integer
+                    nodePort:
+                      type: integer
                 template:
                   type: object
                   properties:
