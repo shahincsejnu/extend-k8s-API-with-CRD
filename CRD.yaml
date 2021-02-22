@@ -24,7 +24,8 @@ spec:
             spec:
               type: object
               replicas:
-                type: int
+                type: integer
+                format: int32
                 minimum: 1
               selector:
                 matchLabels:
