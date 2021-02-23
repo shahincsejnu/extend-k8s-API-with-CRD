@@ -90,11 +90,32 @@ spec:
 
 The last two are the basis for building controllers (or operators as some people call them). These four code-generator make up a powerful basis to build full-featured, production-ready controllers, using the same mechanisms and packages that the Kubernetes upstream controllers are using.
 
+** During the code generator, never use extra new line (not more than one between two things, and for sequential command don't use any extra newline) **
 
 ## Code Generator Structure
 
-    
+    k8s-operator
+        |-- pkg
+        |    |-- apis
+        |    |    |-- <your_CRD_group_name>
+        |    |           |-- <your_CRD_version_name>
+        |    |           |      |-- doc.go
+        |    |           |      |-- register.go
+        |    |           |      |-- types.go
+        |    |           |      |-- <zz_generated_deepcopy_file>
+        |    |           |-- register.go
+        |    |-- <generated_client_folder>
+        |           |-- clientset
+        |           |-- informers
+        |           |-- listers
+        |-- hack
+        |    |-- custom-boilerplate.go.txt
+        |    |-- update-codegen.sh
+        |-- vendor
+        |-- go.mod
+        |-- others
 
+* for generating clientset, informers, listers: [followed this tuto](https://www.openshift.com/blog/kubernetes-deep-dive-code-generation-customresources)
 
 # Resources (sequentially)
 
