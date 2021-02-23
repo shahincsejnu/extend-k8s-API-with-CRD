@@ -9,6 +9,10 @@ import (
 // +genclient:noStatus
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
+// +kubebuilder:object:root=true
+// +kubebuilder:resource:path=teployments,singular=teployment,shortName=teploy,categories={}
+// +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
+
 // Teployment describes a teployment.
 type Teployment struct {
 	metav1.TypeMeta   `json:",inline"`

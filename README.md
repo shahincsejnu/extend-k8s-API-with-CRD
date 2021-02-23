@@ -120,9 +120,25 @@ The last two are the basis for building controllers (or operators as some people
     - `hack/update-codegen.sh`
     - if it gives permission denied/similar error for this or some other files then make them executable by:
         - chmod +x <file_path>
+* There are two kind of tags:
+    * Global tags above package in doc.go
+    * Local tags above a type that is processed
+* Tags in general have the shape // +tag-name or // +tag-name=value, that is, they are written into comments. 
+* Be prepared that an empty line might matter.
+
 
 ## How to generate clientset, informers, listers for your CRD
 
+
+# Kubebuilder
+
+
+## Generating CRDs
+
+* KubeBuilder uses a tool called `controller-gen` to generate utility code and Kubernetes object YAML, like CustomResourceDefinitions.
+* To do this, it makes use of special “marker comments” (comments that start with // +) to indicate additional information about fields, types, and packages.
+* In the case of CRDs, these are generally pulled from your `_types.go` files.
+* KubeBuilder provides a `make` target to run controller-gen and generate CRDs: `make manifests`.
 
 
 
@@ -142,3 +158,7 @@ The last two are the basis for building controllers (or operators as some people
 - [x] [To Crd, or Not to Crd, That is the Question](https://www.youtube.com/watch?v=xGafiZEX0YA)
 - [x] https://developer.ibm.com/technologies/containers/tutorials/kubernetes-custom-resource-definitions/
 - [x] [Generating CRDs](https://book.kubebuilder.io/reference/generating-crd.html)
+- [x] [kubebuilder Introduction](https://book.kubebuilder.io/introduction.html)
+- [x] [kubebuilder Quick Start](https://book.kubebuilder.io/quick-start.html)
+- [x] [Kubebuilder Tutorial](https://book.kubebuilder.io/cronjob-tutorial/cronjob-tutorial.html)
+- [x] [Kubebuilder repo](https://github.com/kubernetes-sigs/kubebuilder)
