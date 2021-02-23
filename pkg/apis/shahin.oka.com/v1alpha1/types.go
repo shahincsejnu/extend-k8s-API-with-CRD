@@ -23,11 +23,11 @@ type Teployment struct {
 
 // TeploymentSpec is the spec for a teployment resource
 type TeploymentSpec struct {
-	Replicas *int32 `json:replicas`
-	ServiceType string 	`json:serviceType`
-	NodePort *int `json:nodePort`
-	Image string `json:image`
-	ContainerPort int `json:containerPort`
+	Replicas *int32 `json:"replicas"`
+	ServiceType string 	`json:"serviceType"`
+	NodePort *int `json:"nodePort"`
+	Image string `json:"image"`
+	ContainerPort int `json:"containerPort"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
