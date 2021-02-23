@@ -115,7 +115,16 @@ The last two are the basis for building controllers (or operators as some people
         |-- go.mod
         |-- others
 
-* for generating clientset, informers, listers: [followed this tuto](https://www.openshift.com/blog/kubernetes-deep-dive-code-generation-customresources)
+* for generating clientset, informers, listers: [followed this tuto](https://www.openshift.com/blog/kubernetes-deep-dive-code-generation-customresources) and took `doc.go`, `register.go`, `types.go`, `custom-boilerplate.go.txt` and `update-codegen.sh` from [here](https://github.com/openshift-evangelists/crd-code-generation) and modified the things according to my necessity.
+* after creating `pkg`, `apis`, `<your_CRD_group_name>`, `<your_CRD_version_name>`, `doc.go`, `register.go`, `types.go`, and `hack` then from the `k8s-operator` run:
+    - `hack/update-codegen.sh`
+    - if it gives permission denied/similar error for this or some other files then make them executable by:
+        - chmod +x <file_path>
+
+## How to generate clientset, informers, listers for your CRD
+
+
+
 
 # Resources (sequentially)
 
