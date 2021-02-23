@@ -9,7 +9,6 @@ import (
 // +genclient:noStatus
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-
 // Teployment describes a teployment.
 type Teployment struct {
 	metav1.TypeMeta   `json:",inline"`
@@ -26,7 +25,6 @@ type TeploymentSpec struct {
 	Image string `json:image`
 	ContainerPort int `json:containerPort`
 }
-
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
