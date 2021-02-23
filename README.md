@@ -81,6 +81,21 @@ spec:
 - To check the CRD you just created, run `kubectl describe crd <crd_name>`
 
 
+# Code Generation for CustomResources
+
+* deepcopy-gen—creates a method `func (t* T) DeepCopy() *T` for each type T
+* client-gen—creates typed clientsets for CustomResource APIGroups
+* informer-gen—creates informers for CustomResources which offer an event based interface to react on changes of CustomResources on the server
+* lister-gen—creates listers for CustomResources which offer a read-only caching layer for GET and LIST requests
+
+The last two are the basis for building controllers (or operators as some people call them). These four code-generator make up a powerful basis to build full-featured, production-ready controllers, using the same mechanisms and packages that the Kubernetes upstream controllers are using.
+
+
+## Code Generator Structure
+
+    
+
+
 # Resources (sequentially)
 
 - [x] [Learning Kubernetes CRD in 2020](https://www.youtube.com/watch?v=QMRZhSpuh2w&feature=youtu.be)
@@ -96,4 +111,4 @@ spec:
 - [x] [Writing Kubernetes Controllers for CRDs](https://www.youtube.com/watch?v=7wdUa4Ulwxg)
 - [x] [To Crd, or Not to Crd, That is the Question](https://www.youtube.com/watch?v=xGafiZEX0YA)
 - [x] https://developer.ibm.com/technologies/containers/tutorials/kubernetes-custom-resource-definitions/
-
+- [x] [Generating CRDs](https://book.kubebuilder.io/reference/generating-crd.html)
