@@ -9,10 +9,9 @@ import (
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // +kubebuilder:object:root=true
-// +kubebuilder:resource:path=teployments,singular=teployment,shortName=teploy,categories={}
 // +kubebuilder:printcolumn:JSONPath=".status.replicas",name=Replicas,type=string
 // +kubebuilder:printcolumn:JSONPath=".status.phase",name=Phase,type=string
-
+// +kubebuilder:resource:path=teployments,singular=teployment,shortName=teploy,categories={}
 // Teployment describes a teployment.
 type Teployment struct {
 	metav1.TypeMeta   `json:",inline"`
@@ -27,7 +26,7 @@ type Teployment struct {
 type TeploymentSpec struct {
 	// +optional
 	// +kubebuilder:default:=1
-	Replicas int32 `json:"replicas"`
+	Replicas *int32 `json:"replicas"`
 	ServiceType string 	`json:"serviceType"`
 	NodePort int `json:"nodePort,omitempty"`
 	Image string `json:"image"`
