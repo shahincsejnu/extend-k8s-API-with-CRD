@@ -18,11 +18,7 @@ spec:
     singular: teployment
   scope: Namespaced
   versions:
-  - additionalPrinterColumns:
-    - jsonPath: .metadata.creationTimestamp
-      name: Age
-      type: date
-    name: v1alpha1
+  - name: v1alpha1
     schema:
       openAPIV3Schema:
         description: Teployment describes a teployment.
@@ -61,7 +57,6 @@ spec:
         type: object
     served: true
     storage: true
-    subresources: {}
 status:
   acceptedNames:
     kind: ""

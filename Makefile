@@ -5,4 +5,5 @@
 CONTROLLER_GEN = ./bin/controller-gen
 
 manifests:
-	@$(CONTROLLER_GEN) crd:trivialVersions=true paths="./..." output:crd:artifacts:config=config/crd/bases
+	@$(CONTROLLER_GEN) crd:trivialVersions=true paths="./..." output:crd:artifacts:config=config/crds
+

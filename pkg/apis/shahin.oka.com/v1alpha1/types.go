@@ -11,7 +11,6 @@ import (
 
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:path=teployments,singular=teployment,shortName=teploy,categories={}
-// +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
 
 // Teployment describes a teployment.
 type Teployment struct {
