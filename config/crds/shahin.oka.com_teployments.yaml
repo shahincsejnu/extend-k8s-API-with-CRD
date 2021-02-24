@@ -13,19 +13,10 @@ spec:
     kind: Teployment
     listKind: TeploymentList
     plural: teployments
-    shortNames:
-    - teploy
     singular: teployment
   scope: Namespaced
   versions:
-  - additionalPrinterColumns:
-    - jsonPath: .status.replicas
-      name: Replicas
-      type: string
-    - jsonPath: .status.phase
-      name: Phase
-      type: string
-    name: v1alpha1
+  - name: v1alpha1
     schema:
       openAPIV3Schema:
         description: Teployment describes a teployment.
@@ -73,7 +64,6 @@ spec:
         type: object
     served: true
     storage: true
-    subresources: {}
 status:
   acceptedNames:
     kind: ""
