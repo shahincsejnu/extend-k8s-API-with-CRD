@@ -139,7 +139,7 @@ The last two are the basis for building controllers (or operators as some people
 * To do this, it makes use of special “marker comments” (comments that start with // +) to indicate additional information about fields, types, and packages.
 * In the case of CRDs, these are generally pulled from your `_types.go` files.
 * KubeBuilder provides a `make` target to run controller-gen and generate CRDs: `make manifests`.
-
+* [all the marker comment needed for generating CRDs](https://book.kubebuilder.io/reference/markers/crd-validation.html)
 
 
 # Resources (sequentially)
