@@ -3,8 +3,6 @@ kind: Teployment
 metadata:
   name: apiserver-teployment
 spec:
-  replicas: 1
-  serviceType: NodePort
+  serviceType: ClusterIP
   image: shahincsejnu/httpapiserver:v1.0.5
-  nodePort: 31005
   containerPort: 8080
