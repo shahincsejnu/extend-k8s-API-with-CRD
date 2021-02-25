@@ -13,9 +13,7 @@ import (
 // +kubebuilder:printcolumn:JSONPath=".status.phase",name=Phase,type=string
 // +kubebuilder:printcolumn:JSONPath=".metadata.creationTimestamp",name=Age,type=date
 // +kubebuilder:resource:path=teployments,singular=teployment,shortName=teploy,categories={}
-
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
 // Teployment describes a teployment.
 type Teployment struct {
 	metav1.TypeMeta   `json:",inline"`
