@@ -14,7 +14,7 @@ import (
 // +kubebuilder:printcolumn:JSONPath=".metadata.creationTimestamp",name=Age,type=date
 // +kubebuilder:resource:path=teployments,singular=teployment,shortName=teploy,categories={}
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// Teployment describes a teployment.
+// Teployment describes a teployment. It is our root type, it describes the Teployment kind. It contains TypeMeta (which describes API version and Kind), and also contains ObjectMeta, which holds things like name, namespace, and labels.
 type Teployment struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -24,7 +24,7 @@ type Teployment struct {
 	Status TeploymentStatus `json:"status"`
 }
 
-// TeploymentSpec is the spec for a teployment resource
+// TeploymentSpec is the spec for a teployment resource, it defines the desired state of Teployment
 type TeploymentSpec struct {
 	// +optional
 	// +kubebuilder:default:=1
@@ -35,6 +35,7 @@ type TeploymentSpec struct {
 	ContainerPort int `json:"containerPort"`
 }
 
+// TeploymentStatus defines the observed state of Teployment
 type TeploymentStatus struct {
 	// Specifies the current phase of the teployment
 	// +optional
@@ -48,7 +49,7 @@ type TeploymentStatus struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// TeploymentList is a list of Teployment resources
+// TeploymentList is a list of Teployment resources. In general, we never modify either of these -- all modifications go in either Spec or Status.
 type TeploymentList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata"`

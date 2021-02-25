@@ -142,6 +142,16 @@ The last two are the basis for building controllers (or operators as some people
 * [all the marker comment needed for generating CRDs](https://book.kubebuilder.io/reference/markers/crd-validation.html)
 
 
+# Controller
+
+- Controllers are the core of Kubernetes, and of any operator.
+- It’s a controller’s job to ensure that, for any given object, the actual state of the world matches the desired state in the object.
+- Each controller focuses on one root Kind, but may interact with other Kinds.
+- We call this process reconciling. In controller-runtime, the logic that implements the reconciling for a specific kind is called a Reconciler. A reconciler takes the name of an object, and returns whether or not we need to try again.
+
+
+
+
 # Resources (sequentially)
 
 - [x] [Learning Kubernetes CRD in 2020](https://www.youtube.com/watch?v=QMRZhSpuh2w&feature=youtu.be)
