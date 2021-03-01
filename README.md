@@ -149,6 +149,7 @@ The last two are the basis for building controllers (or operators as some people
 - Each controller focuses on one root Kind, but may interact with other Kinds.
 - We call this process reconciling. In controller-runtime, the logic that implements the reconciling for a specific kind is called a Reconciler. A reconciler takes the name of an object, and returns whether or not we need to try again.
 
+- [x] [Designing Custom Controller](https://www.youtube.com/watch?v=a005Qlx11qc) : A good complete tutorial for controller writing
  
 
 
