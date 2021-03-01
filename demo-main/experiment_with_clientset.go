@@ -4,13 +4,15 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log"
+	"path/filepath"
+
 	"github.com/davecgh/go-spew/spew"
+
 	ShahinV1alpha1 "github.com/shahincsejnu/extend-k8s-API-with-CRD/pkg/client/clientset/versioned"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
-	"log"
-	"path/filepath"
 )
 
 func main() {
@@ -28,10 +30,10 @@ func main() {
 
 	skc := ShahinV1alpha1.NewForConfigOrDie(config)
 
-	tpmnt, err := skc.ShahinV1alpha1().Teployments("default").Get(context.TODO(), "apiserver-teployment", metav1.GetOptions{})
+	tpmnt, err := skc.ShahinV1alpha1().Teployments("default").Get(context.TODO(), "apiserver-teployment5", metav1.GetOptions{})
 	if err != nil {
 		fmt.Printf("%v", err.Error())
+	} else {
+		spew.Dump(tpmnt)
 	}
-
-	spew.Dump(tpmnt.Spec)
 }

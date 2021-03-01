@@ -45,10 +45,12 @@ spec:
             description: TeploymentSpec is the spec for a teployment resource, it defines the desired state of Teployment
             properties:
               containerPort:
+                format: int32
                 type: integer
               image:
                 type: string
               nodePort:
+                format: int32
                 type: integer
               replicas:
                 default: 1

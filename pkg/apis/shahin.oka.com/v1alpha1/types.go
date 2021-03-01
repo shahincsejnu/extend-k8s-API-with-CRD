@@ -29,11 +29,11 @@ type Teployment struct {
 type TeploymentSpec struct {
 	// +optional
 	// +kubebuilder:default:=1
-	Replicas *int32 `json:"replicas"`
-	ServiceType string 	`json:"serviceType"`
-	NodePort int `json:"nodePort,omitempty"`
-	Image string `json:"image"`
-	ContainerPort int `json:"containerPort"`
+	Replicas      *int32 `json:"replicas"`
+	ServiceType   string `json:"serviceType"`
+	NodePort      int32  `json:"nodePort,omitempty"`
+	Image         string `json:"image"`
+	ContainerPort int32  `json:"containerPort"`
 }
 
 // TeploymentStatus defines the observed state of Teployment

@@ -1,7 +1,7 @@
 apiVersion: shahin.oka.com/v1alpha1
 kind: Teployment
 metadata:
-  name: apiserver-teployment
+  name: test
 spec:
   serviceType: ClusterIP
   image: shahincsejnu/httpapiserver:v1.0.5
