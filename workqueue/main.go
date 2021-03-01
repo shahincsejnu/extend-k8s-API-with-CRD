@@ -26,8 +26,8 @@ type Controller struct {
 	queue workqueue.RateLimitingInterface
 	informer cache.Controller
 
-	crdClient c
-	kClient kub
+	//crdClient c
+	//kClient kub
 }
 
 // NewController creates a new Controller
@@ -107,17 +107,17 @@ func (c *Controller) syncToStdout(key string) error {
 		// is dependent on the actual instance, to detect that a teployment was recreated with the same name
 		fmt.Printf("Sync/Add/Update for Teployment %s\n", obj.(*v1alpha1.Teployment).GetName())
 
-		sdfds := obj.(v1alpha1.Teployment)
-		process()
+		//sdfds := obj.(v1alpha1.Teployment)
+		//process()
 	}
 
 	return nil
 }
 
-func (c *Controller) process(tep *v1alpha1.Teployment) error {
-	// Create depl
-	// Create service
-}
+//func (c *Controller) process(tep *v1alpha1.Teployment) error {
+//	// Create depl
+//	// Create service
+//}
 
 // handleErr checks if an error happened and makes sure we will retry later
 func (c *Controller) handleErr(err error, key interface{}) {
