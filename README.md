@@ -173,3 +173,10 @@ The last two are the basis for building controllers (or operators as some people
 - [x] [kubebuilder Quick Start](https://book.kubebuilder.io/quick-start.html)
 - [x] [Kubebuilder Tutorial](https://book.kubebuilder.io/cronjob-tutorial/cronjob-tutorial.html)
 - [x] [Kubebuilder repo](https://github.com/kubernetes-sigs/kubebuilder)
+- [x] [Spec and Status](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status)
+- [x] sample-controller:
+    - [x] [repo](https://github.com/kubernetes/sample-controller)
+    - [x] [client-go under the hood](https://github.com/kubernetes/sample-controller/blob/master/docs/controller-client-go.md)
+    - [x] [sample controller main.go](https://github.com/kubernetes/sample-controller/blob/master/main.go)
+    - [x] [sample controller controller.go](https://github.com/kubernetes/sample-controller/blob/master/controller.go#L73:2)
+    

@@ -3,7 +3,7 @@ kind: Teployment
 metadata:
   name: test
 spec:
-  replicas: 4
+  replicas: 3
   serviceType: ClusterIP
-  image: shahincsejnu/httpapiserver:v1.0.6
+  image: shahincsejnu/httpapiserver:v1.0.5
   containerPort: 8080
