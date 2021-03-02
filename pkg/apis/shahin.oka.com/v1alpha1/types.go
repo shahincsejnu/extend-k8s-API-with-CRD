@@ -42,6 +42,9 @@ type TeploymentStatus struct {
 	// +optional
 	Phase string `json:"phase"`
 
+	//
+	Conditions []metav1.Condition
+
 	// observedGeneration is the most recent generation observed for this resource. It corresponds to the
 	// resource's generation, which is updated on mutation by the API Server.
 	// +optional

@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"k8s.io/apimachinery/pkg/util/intstr"
+
 	"github.com/davecgh/go-spew/spew"
 
 	"github.com/shahincsejnu/extend-k8s-API-with-CRD/pkg/apis/shahin.oka.com/v1alpha1"
@@ -122,17 +124,21 @@ func (c *Controller) reconcileFunc(key string) error {
 	return nil
 }
 
-func (c *Controller) process(teploymentObj *v1alpha1.Teployment) {
+func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 	deploymentClient := c.kClient.AppsV1().Deployments(apiv1.NamespaceDefault)
 
 	if teploymentObj.DeletionTimestamp != nil {
 		// delete the teployment
-		return
+		//wait.Until(func() {
+		//
+		//})
+		return nil
 	}
 
 	deploymentName := teploymentObj.ObjectMeta.Name
 
-	tpmnt, err := deploymentClient.Get(context.TODO(), deploymentName, metav1.GetOptions{})
+	dpmnt, err := deploymentClient.Get(context.TODO(), deploymentName, metav1.GetOptions{})
+	spew.Dump(dpmnt)
 
 	errorMessage := "deployments.apps" + " " + "\"" + deploymentName + "\"" + " not found"
 	fmt.Println(err)
@@ -140,11 +146,13 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) {
 	if err != nil {
 		if err.Error() == errorMessage {
 			// create the teployment
-			spew.Dump(tpmnt)
 
 			deployment := &appsv1.Deployment{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: deploymentName,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(teploymentObj, v1alpha1.SchemeGroupVersion.WithKind("Teployment")),
+					},
 				},
 				Spec: appsv1.DeploymentSpec{
 					Replicas: teploymentObj.Spec.Replicas,
@@ -185,14 +193,58 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) {
 				panic(err)
 			}
 			fmt.Printf("Created deployment %q.\n", result.GetObjectMeta().GetName())
+
+			// update status
+			//deploymentClient.UpdateStatus()
+
+			// Create the service
+			serviceName := teploymentObj.ObjectMeta.Name
+			serviceClient := c.kClient.CoreV1().Services(apiv1.NamespaceDefault)
+
+			service := &apiv1.Service{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: serviceName,
+					Labels: map[string]string{
+						"app": "demo",
+					},
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(teploymentObj, v1alpha1.SchemeGroupVersion.WithKind("Teployment")),
+					},
+				},
+				Spec: apiv1.ServiceSpec{
+					Ports: []apiv1.ServicePort{
+						{
+							Protocol: apiv1.ProtocolTCP,
+							Port:     teploymentObj.Spec.ContainerPort,
+							TargetPort: intstr.IntOrString{
+								IntVal: teploymentObj.Spec.ContainerPort,
+							},
+						},
+					},
+					Selector: map[string]string{
+						"app": "demo",
+					},
+					Type: apiv1.ServiceType(teploymentObj.Spec.ServiceType),
+				},
+			}
+
+			fmt.Println("Creating service...")
+			result2, err := serviceClient.Create(context.TODO(), service, metav1.CreateOptions{})
+
+			if err != nil {
+				panic(err)
+			}
+			fmt.Printf("Created service %q.\n", result2.GetObjectMeta().GetName())
+
 		} else {
 			fmt.Printf("%v", err.Error())
 		}
-
-		return
+		return nil
 	}
 
 	// update the teployment
+
+	return nil
 }
 
 // handleErr checks if an error happened and makes sure we will retry later
