@@ -9,8 +9,6 @@ import (
 
 	"k8s.io/apimachinery/pkg/util/intstr"
 
-	"github.com/davecgh/go-spew/spew"
-
 	"github.com/shahincsejnu/extend-k8s-API-with-CRD/pkg/apis/shahin.oka.com/v1alpha1"
 	ShahinV1alpha1 "github.com/shahincsejnu/extend-k8s-API-with-CRD/pkg/client/clientset/versioned"
 	appsv1 "k8s.io/api/apps/v1"
@@ -138,10 +136,10 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 	deploymentName := teploymentObj.ObjectMeta.Name
 
 	dpmnt, err := deploymentClient.Get(context.TODO(), deploymentName, metav1.GetOptions{})
-	spew.Dump(dpmnt)
+	//spew.Dump(dpmnt)
 
 	errorMessage := "deployments.apps" + " " + "\"" + deploymentName + "\"" + " not found"
-	fmt.Println(err)
+	//fmt.Println(err)
 
 	if err != nil {
 		if err.Error() == errorMessage {
@@ -243,6 +241,19 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 	}
 
 	// update the teployment
+	if err != nil {
+		fmt.Errorf("Failed to get latest version of Deployment: %v", err)
+	}
+
+	fmt.Println("Updating the teployment...")
+
+	dpmnt.Spec.Replicas = teploymentObj.Spec.Replicas
+	dpmnt.Spec.Template.Spec.Containers[0].Image = teploymentObj.Spec.Image
+
+	_, updateErr := deploymentClient.Update(context.TODO(), dpmnt, metav1.UpdateOptions{})
+	if updateErr != nil {
+		fmt.Errorf("Had error during update %v", updateErr)
+	}
 
 	return nil
 }
