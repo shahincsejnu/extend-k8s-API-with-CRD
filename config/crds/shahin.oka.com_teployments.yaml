@@ -19,11 +19,17 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
-    - jsonPath: .status.replicas
+    - jsonPath: .metadata.replicas
       name: Replicas
       type: string
     - jsonPath: .status.phase
       name: Phase
+      type: string
+    - jsonPath: .metadata.name
+      name: Deployment
+      type: string
+    - jsonPath: .metadata.name
+      name: Service
       type: string
     - jsonPath: .metadata.creationTimestamp
       name: Age
@@ -49,18 +55,28 @@ spec:
                 type: integer
               image:
                 type: string
+              label:
+                additionalProperties:
+                  type: string
+                type: object
               nodePort:
                 format: int32
                 type: integer
               replicas:
                 default: 1
                 format: int32
+                maximum: 10
+                minimum: 1
                 type: integer
               serviceType:
+                enum:
+                - ClusterIP
+                - NodePort
                 type: string
             required:
             - containerPort
             - image
+            - label
             - serviceType
             type: object
           status:

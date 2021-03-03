@@ -92,6 +92,13 @@ func (in *TeploymentSpec) DeepCopyInto(out *TeploymentSpec) {
 		*out = new(int32)
 		**out = **in
 	}
+	if in.Label != nil {
+		in, out := &in.Label, &out.Label
+		*out = make(map[string]string, len(*in))
+		for key, val := range *in {
+			(*out)[key] = val
+		}
+	}
 	return
 }
 

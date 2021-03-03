@@ -10,8 +10,10 @@ import (
 // +groupName=shahin.oka.com
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
-// +kubebuilder:printcolumn:JSONPath=".status.replicas",name=Replicas,type=string
+// +kubebuilder:printcolumn:JSONPath=".metadata.replicas",name=Replicas,type=string
 // +kubebuilder:printcolumn:JSONPath=".status.phase",name=Phase,type=string
+// +kubebuilder:printcolumn:JSONPath=".metadata.name",name=Deployment,type=string
+// +kubebuilder:printcolumn:JSONPath=".metadata.name",name=Service,type=string
 // +kubebuilder:printcolumn:JSONPath=".metadata.creationTimestamp",name=Age,type=date
 // +kubebuilder:resource:path=teployments,singular=teployment,shortName=teploy,categories={}
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -29,12 +31,23 @@ type Teployment struct {
 type TeploymentSpec struct {
 	// +optional
 	// +kubebuilder:default:=1
-	Replicas      *int32 `json:"replicas"`
-	ServiceType   string `json:"serviceType"`
-	NodePort      int32  `json:"nodePort,omitempty"`
-	Image         string `json:"image"`
-	ContainerPort int32  `json:"containerPort"`
+	// +kubebuilder:validation:Minimum:=1
+	// +kubebuilder:validation:Maximum:=10
+	Replicas *int32 `json:"replicas"`
+
+	ServiceType ServiceType `json:"serviceType"`
+
+	Label map[string]string `json:"label"`
+
+	NodePort int32 `json:"nodePort,omitempty"`
+
+	Image string `json:"image"`
+
+	ContainerPort int32 `json:"containerPort"`
 }
+
+// +kubebuilder:validation:Enum:=ClusterIP;NodePort
+type ServiceType string
 
 // TeploymentStatus defines the observed state of Teployment
 type TeploymentStatus struct {
@@ -43,7 +56,7 @@ type TeploymentStatus struct {
 	Phase string `json:"phase"`
 
 	//
-	Conditions []metav1.Condition
+	//Conditions []metav1.Condition
 
 	// observedGeneration is the most recent generation observed for this resource. It corresponds to the
 	// resource's generation, which is updated on mutation by the API Server.

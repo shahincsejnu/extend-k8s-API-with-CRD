@@ -7,14 +7,14 @@ import (
 	"path/filepath"
 	"time"
 
-	"k8s.io/apimachinery/pkg/util/intstr"
-
 	"github.com/shahincsejnu/extend-k8s-API-with-CRD/pkg/apis/shahin.oka.com/v1alpha1"
 	ShahinV1alpha1 "github.com/shahincsejnu/extend-k8s-API-with-CRD/pkg/client/clientset/versioned"
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
+	kErr "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/fields"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/kubernetes"
@@ -138,12 +138,12 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 	dpmnt, err := deploymentClient.Get(context.TODO(), deploymentName, metav1.GetOptions{})
 	//spew.Dump(dpmnt)
 
-	errorMessage := "deployments.apps" + " " + "\"" + deploymentName + "\"" + " not found"
+	//errorMessage := "deployments.apps" + " " + "\"" + deploymentName + "\"" + " not found"
 	//fmt.Println(err)
 
 	if err != nil {
-		if err.Error() == errorMessage {
-			// create the teployment
+		if kErr.IsNotFound(err) {
+			// create the deployment
 
 			deployment := &appsv1.Deployment{
 				ObjectMeta: metav1.ObjectMeta{
@@ -155,15 +155,11 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 				Spec: appsv1.DeploymentSpec{
 					Replicas: teploymentObj.Spec.Replicas,
 					Selector: &metav1.LabelSelector{
-						MatchLabels: map[string]string{
-							"app": "demo",
-						},
+						MatchLabels: teploymentObj.Spec.Label,
 					},
 					Template: apiv1.PodTemplateSpec{
 						ObjectMeta: metav1.ObjectMeta{
-							Labels: map[string]string{
-								"app": "demo",
-							},
+							Labels: teploymentObj.Spec.Label,
 						},
 						Spec: apiv1.PodSpec{
 							Containers: []apiv1.Container{
@@ -188,7 +184,7 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 			result, err := deploymentClient.Create(context.TODO(), deployment, metav1.CreateOptions{})
 
 			if err != nil {
-				panic(err)
+				fmt.Errorf("%v", err.Error())
 			}
 			fmt.Printf("Created deployment %q.\n", result.GetObjectMeta().GetName())
 
@@ -201,10 +197,8 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 
 			service := &apiv1.Service{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: serviceName,
-					Labels: map[string]string{
-						"app": "demo",
-					},
+					Name:   serviceName,
+					Labels: teploymentObj.Spec.Label,
 					OwnerReferences: []metav1.OwnerReference{
 						*metav1.NewControllerRef(teploymentObj, v1alpha1.SchemeGroupVersion.WithKind("Teployment")),
 					},
@@ -217,12 +211,11 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 							TargetPort: intstr.IntOrString{
 								IntVal: teploymentObj.Spec.ContainerPort,
 							},
+							NodePort: teploymentObj.Spec.NodePort,
 						},
 					},
-					Selector: map[string]string{
-						"app": "demo",
-					},
-					Type: apiv1.ServiceType(teploymentObj.Spec.ServiceType),
+					Selector: teploymentObj.Spec.Label,
+					Type:     apiv1.ServiceType(teploymentObj.Spec.ServiceType),
 				},
 			}
 
@@ -230,7 +223,7 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 			result2, err := serviceClient.Create(context.TODO(), service, metav1.CreateOptions{})
 
 			if err != nil {
-				panic(err)
+				fmt.Errorf("%v", err.Error())
 			}
 			fmt.Printf("Created service %q.\n", result2.GetObjectMeta().GetName())
 
@@ -241,14 +234,12 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 	}
 
 	// update the teployment
-	if err != nil {
-		fmt.Errorf("Failed to get latest version of Deployment: %v", err)
-	}
-
 	fmt.Println("Updating the teployment...")
 
 	dpmnt.Spec.Replicas = teploymentObj.Spec.Replicas
 	dpmnt.Spec.Template.Spec.Containers[0].Image = teploymentObj.Spec.Image
+
+	fmt.Println("Updated the teployment and it's respective things")
 
 	_, updateErr := deploymentClient.Update(context.TODO(), dpmnt, metav1.UpdateOptions{})
 	if updateErr != nil {
@@ -296,13 +287,13 @@ func main() {
 	// creates the connection
 	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
 	if err != nil {
-		panic(err)
+		fmt.Errorf("%v", err.Error())
 	}
 
 	// creates the clientset
 	clientset, err := ShahinV1alpha1.NewForConfig(config)
 	if err != nil {
-		panic(err)
+		fmt.Errorf("%v", err.Error())
 	}
 
 	// create the teployment watcher
