@@ -183,4 +183,7 @@ The last two are the basis for building controllers (or operators as some people
     - [x] [sample controller controller.go](https://github.com/kubernetes/sample-controller/blob/master/controller.go#L73:2)
     - [x] [sample controller md](https://github.com/kubernetes/sample-controller/blob/master/docs/controller-client-go.md)
     - [x] [writing controllers](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-api-machinery/controllers.md)
+    - [x] [Using Finalizers](https://book.kubebuilder.io/reference/using-finalizers.html)
+        - [x] [k8s doc](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/#finalizers)
+    
     

@@ -19,9 +19,9 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
-    - jsonPath: .metadata.replicas
+    - jsonPath: .status.replicas
       name: Replicas
-      type: string
+      type: integer
     - jsonPath: .status.phase
       name: Phase
       type: string
@@ -89,6 +89,9 @@ spec:
               phase:
                 description: Specifies the current phase of the teployment
                 type: string
+              replicas:
+                format: int32
+                type: integer
             type: object
         required:
         - spec

@@ -90,7 +90,7 @@ func (c *Controller) processNextItem() bool {
 	// Invoke the method containing the business logic
 	err := c.reconcileFunc(key.(string))
 	// Handle the error if something went wrong during the execution of the business logic
-	c.handlerr(err, key)
+	c.handleErr(err, key)
 
 	return true
 }
@@ -101,7 +101,7 @@ func (c *Controller) processNextItem() bool {
 func (c *Controller) reconcileFunc(key string) error {
 	obj, exists, err := c.indexer.GetByKey(key)
 	if err != nil {
-		fmt.Errorf("Fetching object with key %s from store failed with %v", key, err)
+		fmt.Printf("Fetching object with key %s from store failed with %v", key, err)
 		return err
 	}
 
@@ -135,6 +135,15 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 		//wait.Until(func() {
 		//
 		//})
+		teploymentObj.ObjectMeta.Finalizers = nil
+		_, err := c.crdClient.ShahinV1alpha1().Teployments(apiv1.NamespaceDefault).Update(context.TODO(), teploymentObj, metav1.UpdateOptions{})
+
+		if err != nil {
+			fmt.Printf("Error: %v", err.Error())
+			return err
+		}
+
+		fmt.Println("Deleted")
 		return nil
 	}
 
@@ -149,6 +158,17 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 	if err != nil {
 		if kErr.IsNotFound(err) {
 			// create the deployment
+
+			teploymentObj.ObjectMeta.Finalizers = []string{
+				"shahin.oka.com/finalizer",
+			}
+
+			teploymentObj, err := c.crdClient.ShahinV1alpha1().Teployments(apiv1.NamespaceDefault).Update(context.TODO(), teploymentObj, metav1.UpdateOptions{})
+
+			if err != nil {
+				fmt.Printf("Error: %v", err.Error())
+				return err
+			}
 
 			deployment := &appsv1.Deployment{
 				ObjectMeta: metav1.ObjectMeta{
@@ -187,9 +207,9 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 
 			fmt.Println("Creating deployment...")
 			result, err := deploymentClient.Create(context.TODO(), deployment, metav1.CreateOptions{})
-
+			//c.crdClient.ShahinV1alpha1().Teployments().Patch()
 			if err != nil {
-				fmt.Errorf("%v", err.Error())
+				fmt.Printf("%v", err.Error())
 			}
 			fmt.Printf("Created deployment %q.\n", result.GetObjectMeta().GetName())
 
@@ -228,7 +248,7 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 			result2, err := serviceClient.Create(context.TODO(), service, metav1.CreateOptions{})
 
 			if err != nil {
-				fmt.Errorf("%v", err.Error())
+				fmt.Printf("%v", err.Error())
 			}
 			fmt.Printf("Created service %q.\n", result2.GetObjectMeta().GetName())
 
@@ -238,11 +258,12 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 			//fmt.Printf("..............", teploymentObj.Status)
 			teploymentObj.Status.Phase = "Ready"
 			teploymentObj.Status.ObservedGeneration = teploymentObj.Generation
+			teploymentObj.Status.Replicas = *result.Spec.Replicas
 
 			_, err = c.crdClient.ShahinV1alpha1().Teployments(apiv1.NamespaceDefault).UpdateStatus(context.TODO(), teploymentObj, metav1.UpdateOptions{})
 
 			if err != nil {
-				fmt.Errorf("Error during updating the status: %v", err.Error())
+				fmt.Printf("Error during updating the status: %v", err.Error())
 			}
 
 		} else {
@@ -259,27 +280,28 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 
 	fmt.Println("Updated the teployment and it's respective things")
 
-	_, updaterr := deploymentClient.Update(context.TODO(), dpmnt, metav1.UpdateOptions{})
-	if updaterr != nil {
-		fmt.Errorf("Had error during update %v", updaterr)
+	dpmnt2, updatErr := deploymentClient.Update(context.TODO(), dpmnt, metav1.UpdateOptions{})
+	if updatErr != nil {
+		fmt.Printf("Had error during update %v", updatErr)
 	}
 
 	// Finally, we update the status block of the Teployment resource to reflect the
 	// current state of the world
 	teploymentObj.Status.Phase = "Ready"
 	teploymentObj.Status.ObservedGeneration = teploymentObj.Generation
+	teploymentObj.Status.Replicas = *dpmnt2.Spec.Replicas
 
 	_, err = c.crdClient.ShahinV1alpha1().Teployments(apiv1.NamespaceDefault).Update(context.TODO(), teploymentObj, metav1.UpdateOptions{})
 
 	if err != nil {
-		fmt.Errorf("Error during updating the status: %v", err.Error())
+		fmt.Printf("Error during updating the status: %v", err.Error())
 	}
 
 	return nil
 }
 
-// handlerr checks if an error happened and makes sure we will retry later
-func (c *Controller) handlerr(err error, key interface{}) {
+// handleErr checks if an error happened and makes sure we will retry later
+func (c *Controller) handleErr(err error, key interface{}) {
 	if err == nil {
 		// Forget about the #AddRateLimited history of the key on every successful synchronization
 		// This ensures that future processing of updates for this key is not delayed because of
@@ -316,13 +338,13 @@ func Start() {
 	// creates the connection
 	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
 	if err != nil {
-		fmt.Errorf("%v", err.Error())
+		fmt.Printf("%v", err.Error())
 	}
 
 	// creates the clientset
 	clientset, err := ShahinV1alpha1.NewForConfig(config)
 	if err != nil {
-		fmt.Errorf("%v", err.Error())
+		fmt.Printf("%v", err.Error())
 	}
 
 	// create the teployment watcher

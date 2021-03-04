@@ -9,7 +9,7 @@ import (
 // +groupName=shahin.oka.com
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
-// +kubebuilder:printcolumn:JSONPath=".metadata.replicas",name=Replicas,type=string
+// +kubebuilder:printcolumn:JSONPath=".status.replicas",name=Replicas,type=integer
 // +kubebuilder:printcolumn:JSONPath=".status.phase",name=Phase,type=string
 // +kubebuilder:printcolumn:JSONPath=".metadata.name",name=Deployment,type=string
 // +kubebuilder:printcolumn:JSONPath=".metadata.name",name=Service,type=string
@@ -53,6 +53,9 @@ type TeploymentStatus struct {
 	// Specifies the current phase of the teployment
 	// +optional
 	Phase string `json:"phase"`
+
+	// +optional
+	Replicas int32 `json:"replicas"`
 
 	//
 	//Conditions []metav1.Condition
