@@ -174,9 +174,13 @@ The last two are the basis for building controllers (or operators as some people
 - [x] [Kubebuilder Tutorial](https://book.kubebuilder.io/cronjob-tutorial/cronjob-tutorial.html)
 - [x] [Kubebuilder repo](https://github.com/kubernetes-sigs/kubebuilder)
 - [x] [Spec and Status](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status)
+- [x] [queue of workqueue](https://github.com/kubernetes/client-go/blob/master/util/workqueue/queue.go)
+- [x] [kmodules](https://github.com/kmodules/client-go/blob/master/apps/v1/deployment.go)
 - [x] sample-controller:
     - [x] [repo](https://github.com/kubernetes/sample-controller)
     - [x] [client-go under the hood](https://github.com/kubernetes/sample-controller/blob/master/docs/controller-client-go.md)
     - [x] [sample controller main.go](https://github.com/kubernetes/sample-controller/blob/master/main.go)
     - [x] [sample controller controller.go](https://github.com/kubernetes/sample-controller/blob/master/controller.go#L73:2)
+    - [x] [sample controller md](https://github.com/kubernetes/sample-controller/blob/master/docs/controller-client-go.md)
+    - [x] [writing controllers](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-api-machinery/controllers.md)
     

@@ -5,7 +5,6 @@ import (
 )
 
 // +genclient
-// +genclient:noStatus
 
 // +groupName=shahin.oka.com
 // +kubebuilder:object:root=true

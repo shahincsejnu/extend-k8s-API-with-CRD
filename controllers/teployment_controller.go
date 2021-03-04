@@ -116,7 +116,12 @@ func (c *Controller) reconcileFunc(key string) error {
 		// Do a deepcopy of obj
 		teploymentObj := obj.(*v1alpha1.Teployment).DeepCopy()
 		// process the newly deepcopy object according to need
-		c.process(teploymentObj)
+		err = c.process(teploymentObj)
+
+		if err != nil {
+			fmt.Printf("Error %v", err.Error())
+			return err
+		}
 	}
 
 	return nil
@@ -227,14 +232,27 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 			}
 			fmt.Printf("Created service %q.\n", result2.GetObjectMeta().GetName())
 
+			// Finally, we update the status block of the Teployment resource to reflect the
+			// current state of the world
+			fmt.Println("updating the teployment status")
+			//fmt.Printf("..............", teploymentObj.Status)
+			teploymentObj.Status.Phase = "Ready"
+			teploymentObj.Status.ObservedGeneration = teploymentObj.Generation
+
+			_, eErr := c.crdClient.ShahinV1alpha1().Teployments(apiv1.NamespaceDefault).UpdateStatus(context.TODO(), teploymentObj, metav1.UpdateOptions{})
+
+			if eErr != nil {
+				fmt.Errorf("Error during updating the status: %v", eErr.Error())
+			}
+
 		} else {
 			fmt.Printf("%v", err.Error())
 		}
 		return nil
 	}
 
-	// update the teployment
-	fmt.Println("Updating the teployment...")
+	// update the teployment's underline things
+	fmt.Println("Updating the teployment underlying things...")
 
 	dpmnt.Spec.Replicas = teploymentObj.Spec.Replicas
 	dpmnt.Spec.Template.Spec.Containers[0].Image = teploymentObj.Spec.Image
@@ -244,6 +262,17 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 	_, updateErr := deploymentClient.Update(context.TODO(), dpmnt, metav1.UpdateOptions{})
 	if updateErr != nil {
 		fmt.Errorf("Had error during update %v", updateErr)
+	}
+
+	// Finally, we update the status block of the Teployment resource to reflect the
+	// current state of the world
+	teploymentObj.Status.Phase = "Ready"
+	teploymentObj.Status.ObservedGeneration = teploymentObj.Generation
+
+	_, eErr := c.crdClient.ShahinV1alpha1().Teployments(apiv1.NamespaceDefault).Update(context.TODO(), teploymentObj, metav1.UpdateOptions{})
+
+	if eErr != nil {
+		fmt.Errorf("Error during updating the status: %v", eErr.Error())
 	}
 
 	return nil
