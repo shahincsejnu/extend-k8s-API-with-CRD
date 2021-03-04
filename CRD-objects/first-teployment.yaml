@@ -1,7 +1,7 @@
 apiVersion: shahin.oka.com/v1alpha1
 kind: Teployment
 metadata:
-  name: test3
+  name: test
 spec:
   replicas: 3
   serviceType: NodePort

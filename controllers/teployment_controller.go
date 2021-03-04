@@ -131,10 +131,7 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 	deploymentClient := c.kClient.AppsV1().Deployments(apiv1.NamespaceDefault)
 
 	if teploymentObj.DeletionTimestamp != nil {
-		// delete the teployment
-		//wait.Until(func() {
-		//
-		//})
+		// remove the finalizer to delete the teployment
 		teploymentObj.ObjectMeta.Finalizers = nil
 		_, err := c.crdClient.ShahinV1alpha1().Teployments(apiv1.NamespaceDefault).Update(context.TODO(), teploymentObj, metav1.UpdateOptions{})
 
@@ -252,6 +249,16 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 			}
 			fmt.Printf("Created service %q.\n", result2.GetObjectMeta().GetName())
 
+			err = WaitUntilDeploymentReady(c.kClient, result.ObjectMeta)
+			if err != nil {
+				return err
+			}
+
+			//err = waitUntilServiceReady()
+			//if err != nil {
+			//	return err
+			//}
+
 			// Finally, we update the status block of the Teployment resource to reflect the
 			// current state of the world
 			fmt.Println("updating the teployment status")
@@ -298,6 +305,16 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 	}
 
 	return nil
+}
+
+func WaitUntilDeploymentReady(c kubernetes.Interface, meta metav1.ObjectMeta) error {
+	return wait.PollImmediate(50*time.Millisecond, 1*time.Minute, func() (bool, error) {
+		if obj, err := c.AppsV1().Deployments(meta.Namespace).Get(context.TODO(), meta.Name, metav1.GetOptions{}); err == nil {
+			fmt.Println("waiting...")
+			return *obj.Spec.Replicas == obj.Status.ReadyReplicas, nil
+		}
+		return false, nil
+	})
 }
 
 // handleErr checks if an error happened and makes sure we will retry later
