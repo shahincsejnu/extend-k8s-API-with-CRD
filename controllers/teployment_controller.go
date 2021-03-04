@@ -1,4 +1,4 @@
-package main
+package controllers
 
 import (
 	"context"
@@ -90,7 +90,7 @@ func (c *Controller) processNextItem() bool {
 	// Invoke the method containing the business logic
 	err := c.reconcileFunc(key.(string))
 	// Handle the error if something went wrong during the execution of the business logic
-	c.handleErr(err, key)
+	c.handlerr(err, key)
 
 	return true
 }
@@ -239,10 +239,10 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 			teploymentObj.Status.Phase = "Ready"
 			teploymentObj.Status.ObservedGeneration = teploymentObj.Generation
 
-			_, eErr := c.crdClient.ShahinV1alpha1().Teployments(apiv1.NamespaceDefault).UpdateStatus(context.TODO(), teploymentObj, metav1.UpdateOptions{})
+			_, err = c.crdClient.ShahinV1alpha1().Teployments(apiv1.NamespaceDefault).UpdateStatus(context.TODO(), teploymentObj, metav1.UpdateOptions{})
 
-			if eErr != nil {
-				fmt.Errorf("Error during updating the status: %v", eErr.Error())
+			if err != nil {
+				fmt.Errorf("Error during updating the status: %v", err.Error())
 			}
 
 		} else {
@@ -259,9 +259,9 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 
 	fmt.Println("Updated the teployment and it's respective things")
 
-	_, updateErr := deploymentClient.Update(context.TODO(), dpmnt, metav1.UpdateOptions{})
-	if updateErr != nil {
-		fmt.Errorf("Had error during update %v", updateErr)
+	_, updaterr := deploymentClient.Update(context.TODO(), dpmnt, metav1.UpdateOptions{})
+	if updaterr != nil {
+		fmt.Errorf("Had error during update %v", updaterr)
 	}
 
 	// Finally, we update the status block of the Teployment resource to reflect the
@@ -269,17 +269,17 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 	teploymentObj.Status.Phase = "Ready"
 	teploymentObj.Status.ObservedGeneration = teploymentObj.Generation
 
-	_, eErr := c.crdClient.ShahinV1alpha1().Teployments(apiv1.NamespaceDefault).Update(context.TODO(), teploymentObj, metav1.UpdateOptions{})
+	_, err = c.crdClient.ShahinV1alpha1().Teployments(apiv1.NamespaceDefault).Update(context.TODO(), teploymentObj, metav1.UpdateOptions{})
 
-	if eErr != nil {
-		fmt.Errorf("Error during updating the status: %v", eErr.Error())
+	if err != nil {
+		fmt.Errorf("Error during updating the status: %v", err.Error())
 	}
 
 	return nil
 }
 
-// handleErr checks if an error happened and makes sure we will retry later
-func (c *Controller) handleErr(err error, key interface{}) {
+// handlerr checks if an error happened and makes sure we will retry later
+func (c *Controller) handlerr(err error, key interface{}) {
 	if err == nil {
 		// Forget about the #AddRateLimited history of the key on every successful synchronization
 		// This ensures that future processing of updates for this key is not delayed because of
@@ -304,7 +304,7 @@ func (c *Controller) handleErr(err error, key interface{}) {
 	klog.Infof("Dropping teployment %q out of the queue: %v", key, err)
 }
 
-func main() {
+func Start() {
 	var kubeconfig *string
 
 	if home := homedir.HomeDir(); home != "" {
