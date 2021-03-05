@@ -254,11 +254,6 @@ func (c *Controller) process(teploymentObj *v1alpha1.Teployment) error {
 				return err
 			}
 
-			//err = waitUntilServiceReady()
-			//if err != nil {
-			//	return err
-			//}
-
 			// Finally, we update the status block of the Teployment resource to reflect the
 			// current state of the world
 			fmt.Println("updating the teployment status")
